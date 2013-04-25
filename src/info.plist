@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.anttikupila.alfred.datasheet</string>
+	<key>connections</key>
+	<dict>
+		<key>DB9E28E7-3AEB-45AA-9D2D-652D79AD82B6</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>D1E7EB6A-4E6C-4E4E-9FB0-8EB919ABEA09</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Antti Kupila</string>
+	<key>description</key>
+	<string>Find datasheet for component</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Datasheet</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>plusspaces</key>
+				<false/>
+				<key>url</key>
+				<string>{query}</string>
+				<key>utf8</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.openurl</string>
+			<key>uid</key>
+			<string>D1E7EB6A-4E6C-4E4E-9FB0-8EB919ABEA09</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>datasheet</string>
+				<key>runningsubtext</key>
+				<string>Loading..</string>
+				<key>script</key>
+				<string>// SETTINGS
+
+$country = "nl";
+$apiKey = "dk4q9ss8cxttdzjddw7v83mw";
+
+// ------------
+
+require_once('workflows.php');
+$wf = new Workflows();
+
+$farnell = array(
+	"http://api.element14.com//catalog/products?term=any:" . str_replace(" ", "+", "{query}"),
+	"storeInfo.id=$country.farnell.com",
+	"resultsSettings.offset=0",
+	"resultsSettings.numberOfResults=25",
+	"resultsSettings.refinements.filters=",
+	"resultsSettings.responseGroup=medium",
+	"callInfo.omitXmlSchema=false",
+	"callInfo.callback=",
+	"callInfo.responseDataFormat=json",
+	"callinfo.apiKey=p69bn6eddxvtnpj6eqz7ecgr"
+);
+
+$json = $wf-&gt;request( implode("&amp;", $farnell) );
+$json = json_decode( $json, true );
+$json = $json['keywordSearchReturn'];
+$json = $json['products'];
+
+$datasheetList = array();
+
+if ($json)
+{
+	usort($json, function($a, $b) { return strcmp($a['brandName'], $b['brandName']); });
+	foreach( $json as $result )
+	{
+		if ( $result['datasheets'] )
+		{
+			$datasheets = $result['datasheets'];
+			foreach ( $datasheets AS $datasheet )
+			{
+				if ($datasheet['type'] == 'T' &amp;&amp; !in_array($datasheet['url'], $datasheetList))
+				{
+					$desc = $result['displayName'];
+					$desc = str_replace($result['brandName'], "", $desc);
+					$desc = str_replace($result['translatedManufacturerPartNumber'], "", $desc);
+					$desc = preg_replace("/^[-\s]+/", "", $desc);
+
+					$wf-&gt;result( 
+						$result['id'],
+						$datasheet['url'],
+						ucwords(strtolower($result['brandName'])) . " - " . $result['translatedManufacturerPartNumber'],
+						$desc,
+						"pdf.png",
+						"yes"
+					);
+					array_push($datasheetList, $datasheet['url']);
+				}
+			}
+		}
+	}
+}
+
+if ( count($wf-&gt;results()) &lt;= 0 )
+{
+	$wf-&gt;result( 'google', 'https://www.google.com/search?ie=UTF-8&amp;oe=UTF-8&amp;q='.urlencode( "{query} datasheet filetype:pdf" ), 'Nothing Found', 'Datasheet not found. Look for {query} datasheet on Google', 'google.png' );
+}
+
+echo $wf-&gt;toxml();</string>
+				<key>subtext</key>
+				<string>(add part number)</string>
+				<key>title</key>
+				<string>Find datasheet</string>
+				<key>type</key>
+				<integer>1</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>DB9E28E7-3AEB-45AA-9D2D-652D79AD82B6</string>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>D1E7EB6A-4E6C-4E4E-9FB0-8EB919ABEA09</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>DB9E28E7-3AEB-45AA-9D2D-652D79AD82B6</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>http://anttikupila.com</string>
+</dict>
+</plist>
