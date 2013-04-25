@@ -30,12 +30,13 @@ Examples:
 
 Credits
 -------------
-This workflow was created by Antti Kupila to relieve some annoyance on going through a bunch of sites on Google trying to look for a datasheet :)
+This workflow was created by [Antti Kupila] to relieve some annoyance on going through a bunch of sites on Google trying to look for a datasheet :)
 
 The workflow uses the excellent [workflows.php helper class] by [David Ferguson]
 
 The icon is done by [Fasticon] and included in the [Leopard iPhone icon pack]
 
+[Antti Kupila]: http://anttikupila.com
 [David Ferguson]: http://dferg.us/
 [workflows.php helper class]: http://dferg.us/workflows-class/
 [Fasticon]: http://www.fasticon.com/
