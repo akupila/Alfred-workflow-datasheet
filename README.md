@@ -3,6 +3,10 @@ Alfred Workflow for finding datasheets
 
 An Alfred workflow to look for datasheets on Farnell and open them in the browser
 
+![Starting point](https://raw.github.com/akupila/Alfred-workflow-datasheet/master/Screenshot%201.png)
+![Looking for TPS61200](https://raw.github.com/akupila/Alfred-workflow-datasheet/master/Screenshot%202.png)
+![Looking for ATMEGA328P](https://raw.github.com/akupila/Alfred-workflow-datasheet/master/Screenshot%203.png)
+
 Installation
 -------------
 * Download the workflow and doubleclick datasheet.alfredworkflow to install.
